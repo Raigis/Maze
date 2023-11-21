@@ -27,3 +27,4 @@ C:\GeekBrains\C#\Maze\obj\Debug\net8.0\refint\Experiment.dll
 C:\GeekBrains\C#\Maze\obj\Debug\net8.0\Experiment.pdb
 C:\GeekBrains\C#\Maze\obj\Debug\net8.0\Experiment.genruntimeconfig.cache
 C:\GeekBrains\C#\Maze\obj\Debug\net8.0\ref\Experiment.dll
+C:\GeekBrains\C#\Maze\obj\Debug\net8.0\Experiment.sourcelink.json

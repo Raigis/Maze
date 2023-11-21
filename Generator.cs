@@ -2,10 +2,9 @@ using static Rooms;
 using static Promt;
 public static class Generator{
     private static int[] ArrayAppend (int[] array, int temp){
-        int[] result = new int[array.Length+1];
-        array.CopyTo(result, 0);
-        result[array.Length] = temp;
-        return result;
+        Array.Resize(ref array, array.Length+1);
+        array[array.Length-1] = temp;
+        return array;
     }
     private static int[] VarY(int y){
         if(y == 1 || y == 6 || y == 8 || y == 9){
