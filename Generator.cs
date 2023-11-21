@@ -1,11 +1,19 @@
 using static Rooms;
 using static Promt;
+/// <summary>
+/// Содержит методы генерации карты лабиринта в виде матрицы из номеров комнат и их визуального отображения
+/// </summary>
 public static class Generator{
     private static int[] ArrayAppend (int[] array, int temp){
         Array.Resize(ref array, array.Length+1);
         array[array.Length-1] = temp;
         return array;
     }
+/// <summary>
+/// Исходя из номера предыдущей по столбцу комнаты возвращает массив с номерами возможных комнат
+/// </summary>
+/// <param name="y">ноиер предыдущей по столбцу комнаты</param>
+/// <returns>Массив чисел, состоящий из возможных номеров комнат</returns>
     private static int[] VarY(int y){
         if(y == 1 || y == 6 || y == 8 || y == 9){
             int[] poss = {1,3,4,6,7,8,10,13,17,21};
@@ -18,6 +26,11 @@ public static class Generator{
             return poss;
         }
     }
+    /// <summary>
+    /// Исходя из номера предыдущей по строке комнаты возвращает массив с номерами возможных комнат
+    /// </summary>
+    /// <param name="x">ноиер предыдущей по строке комнаты</param>
+    /// <returns>Массив чисел, состоящий из возможных номеров комнат</returns>
     private static int[] VarX(int x){
         if(x == 1 || x == 7 || x == 8 || x == 9){
             int[] poss = {1,2,3,6,7,9,11,12,16,20};
@@ -30,6 +43,13 @@ public static class Generator{
             return poss;
         }
     }
+/// <summary>
+/// Сравнивает массивы возможных номеров комнат исходя из предыдущих комнат по строке и столбцу, а также положения на карте, и возвращает итоговый массив с возможными номерами комнат
+/// </summary>
+/// <param name="possCell">Массив возможных номеров комнат по положению на карте</param>
+/// <param name="possX">Массив возможных номеров комнат по номеру предыдущей по строке комнаты</param>
+/// <param name="possY">Массив возможных номеров комнат по номеру предыдущей по столбцу комнаты</param>
+/// <returns>Итоговый массив чисел, состоящий из возможных номеров комнат</returns>
     private static int[] ComparisonPossibilites(int[] possCell, int[]? possX = null, int[]? possY = null){
         int[] possibles = new int[1];
         if(possY == null){
@@ -64,6 +84,13 @@ public static class Generator{
         }
         return possibles;
     }
+    /// <summary>
+    /// Правило запонения нижнего правого угла карты
+    /// </summary>
+    /// <param name="x">Номер предыдущей комнаты по строке</param>
+    /// <param name="y">Номер предыдущей комнаты по столбцу</param>
+    /// <param name="exit">Проверка на наличие выхода</param>
+    /// <returns>Номер комнаты нижнего правого угла карты</returns>
     private static int RightLowerCorner(int x ,int y, bool exit){
         int cell;
         if ((x == 4 || x == 7 || x == 11 || x == 14 || x == 18 || x == 22) && (y == 2 || y == 6 || y == 10 || y == 15 || y == 19 || y == 24)) cell = 3;
@@ -78,6 +105,14 @@ public static class Generator{
         else cell = 0;
         return cell;
     }
+    /// <summary>
+    /// Правило заполнения нижней грани карты
+    /// </summary>
+    /// <param name="enter">Проверка на наличие входа</param>
+    /// <param name="exit">Проверка на наличие выхода</param>
+    /// <param name="x">Номер предыдущей комнаты по строке</param>
+    /// <param name="y">Номер предыдущей комнаты по столбцу</param>
+    /// <returns>Номера комнат нижней грани карты</returns>
     private static int LowerEdge(bool enter, bool exit, int x ,int y){
         int cell;
         if (!enter && !exit){
@@ -99,6 +134,13 @@ public static class Generator{
         }
         return cell;
     }
+    /// <summary>
+    /// Правило заполнения нижнего левого угла карты
+    /// </summary>
+    /// <param name="enter">Проверка на наличие входа</param>
+    /// <param name="exit">Проверка на наличие выхода</param>
+    /// <param name="y">Номер предыдущей комнаты по столбцу</param>
+    /// <returns>Номер комнаты нижнего левого угла карты</returns>
     private static int LeftLowerCorner(bool enter, bool exit, int y){
         int cell;
         if (!enter && !exit){
@@ -120,6 +162,14 @@ public static class Generator{
         }
         return cell;
     }
+    /// <summary>
+    /// Правило заполнения правой грани карты
+    /// </summary>
+    /// <param name="enter">Проверка на наличие входа</param>
+    /// <param name="exit">Проверка на наличие выхода</param>
+    /// <param name="x">Номер предыдущей комнаты по строке</param>
+    /// <param name="y">Номер предыдущей комнаты по столбцу</param>
+    /// <returns>Номера комнат правой грани карты</returns>
     private static int RightEdge(bool enter, bool exit, int x ,int y){
         int cell;
         if (!enter && !exit){
@@ -141,15 +191,26 @@ public static class Generator{
         }
         return cell;
     }
-    private static int Centre(bool enter, bool exit, int x, int y){
+    /// <summary>
+    /// Правило заполнения центральной части карты
+    /// </summary>
+    /// <param name="x">Номер предыдущей комнаты по строке</param>
+    /// <param name="y">Номер предыдущей комнаты по столбцу</param>
+    /// <returns>Номера комнат центральной части карты</returns>
+    private static int Centre(int x, int y){
         int cell;
-        int[] possX = VarX(x);
-        int[] possY = VarY(y);
         int[] possCell = {1,2,3,4,5,6,7,8,9,10,11};
         int[] possibles = ComparisonPossibilites(possCell, possX: VarX(x), possY: VarY(y));
         cell = possibles[new Random().Next(0, possibles.Length)];
         return cell;
     }
+    /// <summary>
+    /// Правило заполнения левой грани карты
+    /// </summary>
+    /// <param name="enter">Проверка на наличие входа</param>
+    /// <param name="exit">Проверка на наличие выхода</param>
+    /// <param name="y">Номер предыдущей комнаты по столбцу</param>
+    /// <returns>Номера комнат левой грани карты</returns>
     private static int LeftEdge(bool enter, bool exit, int y){
         int cell;
         int[] possY = VarY(y);
@@ -172,6 +233,12 @@ public static class Generator{
         }
         return cell;
     }
+    /// <summary>
+    /// Правило заполнения верхнего правого угла карты
+    /// </summary>
+    /// <param name="enter">Проверка на наличие входа</param>
+    /// <param name="x">Номер предыдущей комнаты по строке</param>
+    /// <returns>Номер комнаты верхнего правого угла карты</returns>
     private static int RightUpperCorner(bool enter, int x){
         int cell;
         if (!enter){
@@ -185,6 +252,12 @@ public static class Generator{
         }
         return cell;
     }
+    /// <summary>
+    /// Правило заполнения верхней грани карты
+    /// </summary>
+    /// <param name="enter">Проверка на наличие входа</param>
+    /// <param name="x">Номер предыдущей комнаты по строке</param>
+    /// <returns>Номера комнат верхней грани карты</returns>
     private static int UpperEdge(bool enter, int x){
         int cell;
         if (!enter){
@@ -198,29 +271,32 @@ public static class Generator{
         }
         return cell;
     }
-    private static int LeftUpperCorner(bool enter){
+/// <summary>
+/// Правило заполнения верхнего левого угла карты
+/// </summary>
+/// <returns>Номер комнаты верхнего левого угла карты</returns>
+    private static int LeftUpperCorner(){
         int cell;
-        if (!enter){
-            int[] possibles = {5,22,23};
-            cell = possibles[new Random().Next(0, possibles.Length)];
-        } else {
-            int[] possibles = {5,14,15};
-            cell = possibles[new Random().Next(0, possibles.Length)];
-        }
+        int[] possibles = {5,14,15,22,23};
+        cell = possibles[new Random().Next(0, possibles.Length)];
         return cell;
     }
-    public static int[,] MapCoordinatesGenerating(){
+    /// <summary>
+    /// Создаёт карту лабиринта содержащую номера комнат, из которых будет состоять лабиринт
+    /// </summary>
+    /// <returns>Матрица чисел, содержащую номера комнат, образующих лабиринт</returns>
+    public static int[,] MapNumRoomsGenerating(){
         Console.WriteLine($"Введите размеры лабиринта.\nМинимальный размер: 5х5.\nМаксимальный размер: 25х25.");
         bool isEnter = false;
         bool isExit = false;
         int[,] map = new int[Request(),Request(1)];
         for(int i = 0; i < map.GetLength(0); i++ ){
             for(int j = 0; j < map.GetLength(1); j++){
-                if (i == 0 && j == 0) map[i,j] = LeftUpperCorner(isEnter);
+                if (i == 0 && j == 0) map[i,j] = LeftUpperCorner();
                 else if (i == 0 && j != map.GetLength(1)-1) map[i,j] = UpperEdge(isEnter, map[i, j-1]);
                 else if (i == 0 && j == map.GetLength(1)-1) map[i,j] = RightUpperCorner(isEnter, map[i, j-1]);
                 else if (i != map.GetLength(0)-1 && j == 0) map[i,j] = LeftEdge(isEnter, isExit, map[i-1,j]);
-                else if (i != map.GetLength(0)-1 && j != map.GetLength(1)-1) map[i,j] = Centre(isEnter, isExit, map[i, j-1], map[i-1,j]);
+                else if (i != map.GetLength(0)-1 && j != map.GetLength(1)-1) map[i,j] = Centre(map[i, j-1], map[i-1,j]);
                 else if (i != map.GetLength(0)-1 && j == map.GetLength(1)-1) map[i,j] = RightEdge(isEnter, isExit, map[i, j-1], map[i-1,j]);
                 else if (i == map.GetLength(0)-1 && j == 0) map[i,j] = LeftLowerCorner(isEnter, isExit, map[i-1,j]);
                 else if (i == map.GetLength(0)-1 && j != map.GetLength(1)-1) map[i,j] = LowerEdge(isEnter, isExit, map[i, j-1], map[i-1,j]);
@@ -231,19 +307,22 @@ public static class Generator{
         }
         return map;
     }
-
+/// <summary>
+/// На основе сгенерированной карты в виде матрицы чисел, содержащей номера комнат, создаёт её визуальное отображение
+/// </summary>
+/// <returns>Матрица строк, содержащую визуальное отображение карты</returns>
     public static string[,] MapPictureGenerating(){
-        int[,] mapCoor = MapCoordinatesGenerating();
-        string[,] mapPic = new string[mapCoor.GetLength(0)*3+1, mapCoor.GetLength(1)];
+        int[,] mapNumRooms = MapNumRoomsGenerating();
+        string[,] mapPic = new string[mapNumRooms.GetLength(0)*3+1, mapNumRooms.GetLength(1)];
         for (int i = 0; i < mapPic.GetLength(0); i+=3){
             for(int j = 0; j < mapPic.GetLength(1); j++){
                 if(i == 0){
                     for(int k = 0; k < 4; k++){
-                        mapPic[k, j] = Room(mapCoor[i,j], k);
+                        mapPic[k, j] = Room(mapNumRooms[i,j], k);
                     }
                 } else {
                     for(int k = 0; k < 3; k++){
-                        mapPic[k+i, j] = Room(mapCoor[(i-1)/3,j], k+1);
+                        mapPic[k+i, j] = Room(mapNumRooms[(i-1)/3,j], k+1);
                     }
                 }
                 if(i == 0 && j == mapPic.GetLength(1)-1) i++;

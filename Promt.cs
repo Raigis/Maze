@@ -1,4 +1,11 @@
+    /// <summary>
+    /// Запрос ввода данных у пользователя
+    /// </summary>
 public static class Promt{
+    /// <summary>
+    /// Ввод данных пользователя, проверка введёных данных и запрос повторного ввода при неверных введённых данных
+    /// </summary>
+    /// <returns>Введённые значения для длины и высоты лабиринта</returns>
     private static int Print(){
         while(true){
             string? attemp = Console.ReadLine();
@@ -18,12 +25,17 @@ public static class Promt{
             }
         }
     }
+    /// <summary>
+    /// Запрос на ввод вертикального или горизонтального размера лабиринта исходя из поступившего индекса
+    /// </summary>
+    /// <param name="index">Значение очерёдности ввода: 0 - вертикальный размер, 1 - горизонтальный размер</param>
+    /// <returns>Введённые пользователем размеры лабиринта</returns>
     public static int Request(int index = 0){
         if (index == 0){
-            Console.Write($"Введите высоту: ");
+            Console.Write($"Введите вертикальный размер: ");
             return Print();
         } else {
-            Console.Write($"Введите длину: ");
+            Console.Write($"Введите горизонтальный размер: ");
             return Print();
         }
     }

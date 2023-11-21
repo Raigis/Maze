@@ -1,4 +1,13 @@
+/// <summary>
+/// Визуальные отображения комнат по их номерам от 1 до 23
+/// </summary>
 public static class Rooms{
+    /// <summary>
+    /// Получает номер конаты и возвращает её визуальное отображение
+    /// </summary>
+    /// <param name="numRoom">Номер комнаты</param>
+    /// <param name="index">Номар строки вывода комнаты</param>
+    /// <returns>Строка с частью отображения комнаты</returns>
     public static string Room(int numRoom, int index){
         string[] room = new string[4];
         switch(numRoom){
